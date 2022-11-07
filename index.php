@@ -2,12 +2,44 @@
 
 require_once('connection.php');
 
-echo '<ul>';
+$q = $_GET['q'];
 
-$stmt = $pdo->query('SELECT * FROM books WHERE is_deleted=0');
-while ($row = $stmt->fetch())
-{
-    echo '<li><a href="book.php?id=' . $row['id'] . '">' . $row['title'] . '</li>';
+if ( isset($q) && $q ) {
+    $stmt = $pdo->prepare('SELECT * FROM books WHERE is_deleted=0 AND title LIKE :q');
+    $stmt->execute(['q' => "%{$q}%"]);
+} else {
+    $stmt = $pdo->query('SELECT * FROM books WHERE is_deleted=0');
 }
 
-echo '</ul>';
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <nav style="display: flex; justify-content: space-between;">
+        <form action="index.php" method="get">
+            <input type="text" name="q" placeholder="Type here" value="<?=$q;?>">
+            <input type="submit" value="Search">
+        </form>
+        <a href="add_author.php">Lisa autor</a>
+    </nav>
+
+    <main>
+        <ul>
+        <?php while ($book = $stmt->fetch()) { ?>
+            <li>
+                <a href="book.php?id=<?=$book['id'];?>"><?=$book['title'];?></a>
+            </li>
+        <?php } ?>
+        </ul>
+    </main>
+
+</body>
+</html>

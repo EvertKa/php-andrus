@@ -36,7 +36,7 @@ $stmt->execute(['id' => $id]);
     ?>
     <div>
         <span><a href="edit.php?id=<?=$id;?>">Muuda</a></span>
-    
+
         <form action="delete.php" method="POST">
             <input type="hidden" name="id" value="<?=$id?>">
             <input type="submit" value="Kustuta" name="delete">
